@@ -51,7 +51,8 @@ def split_documents(documents):
     return text_splitter.split_documents(documents)
 
 def setup_embeddings_and_vector_store(docs):
-    embeddings = HuggingFaceEmbeddings(model_name="huggingface/models--BAAI--bge-large-en-v1.5/snapshots/d4aa6901d3a41ba39fb536a557fa166f842b0e09/", show_progress=True, model_kwargs={'device': "cpu"})
+    #embeddings = HuggingFaceEmbeddings(model_name="huggingface/models--BAAI--bge-large-en-v1.5/snapshots/d4aa6901d3a41ba39fb536a557fa166f842b0e09/", show_progress=True, model_kwargs={'device': "cpu"})
+    embeddings = HuggingFaceEmbeddings(model_name="huggingface/models--BAAI--bge-large-en-v1.5/snapshots/d4aa6901d3a41ba39fb536a557fa166f842b0e09/", show_progress=True)
     #embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-large-en-v1.5", show_progress=True, model_kwargs={'device': "cpu"})
     qdrant = Qdrant.from_documents(docs, embeddings, location=":memory:", collection_name="cde_data", force_recreate=True)
     return qdrant
@@ -66,7 +67,7 @@ def setup_langchain():
     model_name = next(item["name"] for item in config["models"] if item["active"])
     llm = gpt4all.GPT4All(
         model=model_name,
-        max_tokens=3000,
+        max_tokens=300,
         n_threads=10,
         temp=0.3,
         top_p=0.2,
@@ -76,7 +77,7 @@ def setup_langchain():
         allow_download=False,
         verbose=True
     )
-    llm_chain = LLMChain(prompt=rag_prompt, llm=llm, verbose=True)
+    llm_chain = LLMChain(prompt=rag_prompt, llm=llm, verbose=True, callbacks=callbacks)
     return llm_chain
 
 def format_docs(qdrant, query):

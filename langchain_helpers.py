@@ -75,13 +75,14 @@ def setup_langchain():
         n_batch=8,
         seed=100,
         allow_download=False,
-        verbose=True
+        verbose=True,
+        callbacks=callbacks
     )
-    llm_chain = LLMChain(prompt=rag_prompt, llm=llm, verbose=True, callbacks=callbacks)
+    llm_chain = LLMChain(prompt=rag_prompt, llm=llm, verbose=True)
     return llm_chain
 
 def format_docs(qdrant, query):
-    found_docs = qdrant.similarity_search_with_score(query, k=100)
+    found_docs = qdrant.similarity_search_with_score(query, k=4)
     return "\n\n".join(doc[0].page_content for doc in found_docs)
 
 def run_query(llm_chain, qdrant, query):

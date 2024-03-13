@@ -110,8 +110,10 @@ curl -X POST http://localhost:5000/query \
 This process allows for a coherent and context-aware conversation with the service, leveraging the power of language models to generate informative and relevant responses based on the ongoing discussion thread.
 
 ## Deployment
-
-Instructions for deploying the service as a systemd unit are included in the `install.sh` script. This script also handles setting up an environment on systems with EFS support.
+```
+docker build -t ragllm2 .
+docker run -p 5000:5000 ragllm2
+```
 
 ## Contributing
 

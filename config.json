@@ -22,22 +22,6 @@
         },
         {
             "active": false,
-            "name": "models/gpt4all-13b-snoozy-q4_0.gguf"
-        },
-        {
-            "active": false,
-            "name": "models/orca-2-7b.Q4_0.gguf"
-        },
-        {
-            "active": false,
-            "name": "models/orca-mini-3b-gguf2-q4_0.gguf"
-        },
-        {
-            "active": false,
-            "name": "models/gpt4all-falcon-newbpe-q4_0.gguf"
-        },
-        {
-            "active": false,
             "name": "models/rift-coder-v0-7b-q4_0.gguf"
         }
     ]

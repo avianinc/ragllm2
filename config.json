@@ -14,15 +14,7 @@
     "models": [
         {
             "active": true,
-            "name": "models/wizardlm-13b-v1.2.Q4_0.gguf"
-        },
-        {
-            "active": false,
             "name": "models/mistral-7b-instruct-v0.1.Q4_0.gguf"
-        },
-        {
-            "active": false,
-            "name": "models/rift-coder-v0-7b-q4_0.gguf"
         }
     ]
 }

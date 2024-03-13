@@ -76,7 +76,7 @@ After starting the application, you can interact with the Flask service by sendi
 
 #### Initial Query
 
-For the first query in a conversation thread, you only need to provide the `query` and an optional `context`. Here is an example command:
+For the first query in a conversation thread, you only need to provide the `query` and an optional `context`. Here is an example command: 
 
 ```bash
 curl -X POST http://localhost:5000/query \

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Processing Status</title>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <script>
+        // Redirect to files page after showing the message
+        setTimeout(function(){
+            window.location.href = '/files';
+        }, 5000); // Adjust time as needed
+    </script>
+</body>
+</html>

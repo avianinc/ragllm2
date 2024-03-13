@@ -1,0 +1,9 @@
+langchain
+gpt4all
+qdrant-client
+sentence-transformers
+torch
+pypdf
+requests
+Flask
+flask-cors

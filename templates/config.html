@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Configuration</title>
+</head>
+<body>
+    <div>
+        <a href="/">Back...</a>
+    </div>
+    <h2>Select Template</h2>
+    <select id="templateSelect" onchange="updateConfig()">
+        {% for template in config.templates %}
+        <option value="{{ template.name }}" {% if template.active %}selected{% endif %}>{{ template.name }}</option>
+        {% endfor %}
+    </select>
+    <div id="templateContent"></div>
+
+    <h2>Select Model</h2>
+    <select id="modelSelect" onchange="updateConfig()">
+        {% for model in config.models %}
+        <option value="{{ model.name }}" {% if model.active %}selected{% endif %}>{{ model.name }}</option>
+        {% endfor %}
+    </select>
+
+    <script>
+        function updateConfig() {
+            const templateSelect = document.getElementById('templateSelect');
+            const modelSelect = document.getElementById('modelSelect');
+            const templateContentDiv = document.getElementById('templateContent');
+            const selectedTemplateName = templateSelect.value;
+            const selectedModelName = modelSelect.value;
+
+            // Display selected template content
+            const selectedTemplate = {{ config.templates | tojson | safe }}.find(t => t.name === selectedTemplateName);
+            templateContentDiv.textContent = selectedTemplate ? selectedTemplate.content : '';
+
+            // Update config.json on the server
+            fetch('/config', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    templates: {{ config.templates | tojson | safe }}.map(t => ({
+                        ...t,
+                        active: t.name === selectedTemplateName
+                    })),
+                    models: {{ config.models | tojson | safe }}.map(m => ({
+                        ...m,
+                        active: m.name === selectedModelName
+                    }))
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log('Config updated', data))
+            .catch(error => console.error('Error updating config', error));
+
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+{
+    "templates": [
+        {
+            "active": true,
+            "content": "[INST]: You are a mission engineering expert analyst bot, below presents a context from which the a question will be asked, give your valuable insights as well.[\\INST]\nContext: {context}.\nQuestion: {question}\nAnswer: ",
+            "name": "mission_engineering"
+        },
+        {
+            "active": false,
+            "content": "[INST]: You are a sustainment engineering expert analyst bot, below presents a context from which the a question will be asked, give your professional opinion on sustainment strategies.[\\INST]\nContext: {context}.\nQuestion: {question}\nAnswer: ",
+            "name": "sustainment_engineering"
+        }
+    ],
+    "models": [
+        {
+            "active": true,
+            "name": "models/wizardlm-13b-v1.2.Q4_0.gguf"
+        },
+        {
+            "active": false,
+            "name": "models/mistral-7b-instruct-v0.1.Q4_0.gguf"
+        },
+        {
+            "active": false,
+            "name": "models/gpt4all-13b-snoozy-q4_0.gguf"
+        },
+        {
+            "active": false,
+            "name": "models/orca-2-7b.Q4_0.gguf"
+        },
+        {
+            "active": false,
+            "name": "models/orca-mini-3b-gguf2-q4_0.gguf"
+        },
+        {
+            "active": false,
+            "name": "models/gpt4all-falcon-newbpe-q4_0.gguf"
+        },
+        {
+            "active": false,
+            "name": "models/rift-coder-v0-7b-q4_0.gguf"
+        }
+    ]
+}

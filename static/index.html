@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDE - LLM Application</title>
+    <style>
+        #chatBox {
+            border: 1px solid #000;
+            padding: 10px;
+            margin-bottom: 10px;
+            height: 300px;
+            overflow-y: auto;
+        }
+        #queryInput {
+            width: calc(100% - 110px);
+            padding: 10px;
+        }
+        #sendButton {
+            width: 100px;
+            padding: 10px;
+        }
+        select {
+            margin-bottom: 10px;
+        }
+
+        .spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border-left-color: #09f;
+        animation: spin 1s ease infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Add this to your existing styles */
+        #loadingIndicator {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -18px; /* Half the height */
+            margin-left: -18px; /* Half the width */
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <a href="/files">Files</a> | <a href="/config">Configuration</a>
+    </div>
+    <h3>Current Configuration</h3>
+    <p>Template: <span id="currentTemplate">Loading...</span></p>
+    <div id="templateContent"></div> <!-- Placeholder for displaying selected template content -->
+    <p>Model: <span id="currentModel">Loading...</span></p>
+
+    <select id="sessionSelect">
+        <option value="">Select a session or start new</option>
+    </select>
+    <div id="chatBox"></div>
+    <input type="text" id="queryInput" placeholder="Ask a question...">
+    <button id="sendButton">Send</button>
+    <div id="loadingIndicator" class="spinner"></div>
+    <script>
+        document.getElementById("sendButton").onclick = function() {
+            const queryInput = document.getElementById("queryInput");
+            const query = queryInput.value;
+            const sessionSelect = document.getElementById("sessionSelect");
+            const qhid = sessionSelect.value;
+            const loadingIndicator = document.getElementById("loadingIndicator"); // Get the loading indicator
+
+            queryInput.value = ""; // Clear input field
+
+            if (query) {
+
+                // Show the spinner
+                loadingIndicator.style.display = "block";
+
+                // Display the query in the chat box
+                const chatBox = document.getElementById("chatBox");
+                const userQueryDiv = document.createElement("div");
+                userQueryDiv.textContent = "You: " + query;
+                chatBox.appendChild(userQueryDiv);
+
+                // Send the query to the Flask API with the qhid if selected
+                fetch("http://localhost:5000/query", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({query: query, qhid: qhid})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Display the API response in the chat box
+                    const apiResponseDiv = document.createElement("div");
+                    apiResponseDiv.textContent = "Bot: " + data.response;
+                    chatBox.appendChild(apiResponseDiv);
+                    chatBox.scrollTop = chatBox.scrollHeight; // Auto scroll to the bottom
+                    
+                    // Update the sessionSelect with the new qhid and select it
+                    if (!qhid || qhid !== data.qhid) {
+                        const newOption = new Option(data.qhid, data.qhid, true, true);
+                        sessionSelect.add(newOption);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                })
+                .finally(() => {
+                    loadingIndicator.style.display = "none"; // Hide spinner
+                });
+            }
+        };
+
+        // Fetch and display session history when a qhid is selected
+        document.getElementById("sessionSelect").onchange = function() {
+            const qhid = this.value;
+            const chatBox = document.getElementById("chatBox");
+            const loadingIndicator = document.getElementById("loadingIndicator"); // Get the loading indicator
+
+            chatBox.innerHTML = ''; // Clear current chat history
+
+            if (qhid) {
+
+                // Show the spinner
+                loadingIndicator.style.display = "block";
+
+                fetch(`http://localhost:5000/session/${qhid}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error fetching session history:', data.error);
+                    } else {
+                        // Display the session history in the chat box
+                        data.interactions.forEach(interaction => {
+                            const userQueryDiv = document.createElement("div");
+                            userQueryDiv.textContent = "You: " + interaction.query;
+                            chatBox.appendChild(userQueryDiv);
+
+                            const apiResponseDiv = document.createElement("div");
+                            apiResponseDiv.textContent = "Bot: " + interaction.response;
+                            chatBox.appendChild(apiResponseDiv);
+                        });
+                        // Auto scroll to the bottom of the chat box
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                })
+                .finally(() => {
+                    loadingIndicator.style.display = "none"; // Hide spinner
+                });
+            }
+        };
+
+        // Allow sending query with Enter key
+        document.getElementById("queryInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                document.getElementById("sendButton").click();
+            }
+        });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const sessionSelect = document.getElementById('sessionSelect');
+
+        // Fetch the list of qhids when the page loads
+        fetch('http://localhost:5000/sessions')
+        .then(response => response.json())
+        .then(data => {
+            // Populate the combo box with qhids
+            data.forEach(qhid => {
+                const option = new Option(qhid, qhid);
+                sessionSelect.add(option);
+            });
+        })
+        .catch(error => console.error('Error fetching session qhids:', error));
+    });
+
+    // Fetch and display the current configuration on page load
+    document.addEventListener('DOMContentLoaded', function() {
+            fetch('http://localhost:5000/config', { headers: { 'Accept': 'application/json' } })
+            .then(response => response.json())
+            .then(data => {
+                const activeModel = data.models.find(model => model.active).name;
+                const activeTemplate = data.templates.find(template => template.active);
+                
+                document.getElementById('currentModel').textContent = activeModel;
+                document.getElementById('currentTemplate').textContent = activeTemplate.name;
+                document.getElementById('templateContent').textContent = "Template Content: " + activeTemplate.content;
+            })
+            .catch(error => console.error('Error fetching configuration:', error));
+        });
+    </script>
+</body>
+</html>

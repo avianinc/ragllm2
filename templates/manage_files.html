@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Files</title>
+</head>
+<body>
+    <h2>Upload New File</h2>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Upload">
+    </form>
+    
+    <h2>Files</h2>
+    <ul>
+        {% for file in files %}
+        <li>{{ file }} <a href="/delete/{{ file }}">Delete</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

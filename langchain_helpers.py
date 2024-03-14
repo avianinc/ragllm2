@@ -54,7 +54,7 @@ def setup_embeddings_and_vector_store(docs):
     #embeddings = HuggingFaceEmbeddings(model_name="huggingface/models--BAAI--bge-large-en-v1.5/snapshots/d4aa6901d3a41ba39fb536a557fa166f842b0e09/", show_progress=True, model_kwargs={'device': "cpu"})
     embeddings = HuggingFaceEmbeddings(model_name="huggingface/models--BAAI--bge-large-en-v1.5/snapshots/d4aa6901d3a41ba39fb536a557fa166f842b0e09/", show_progress=True)
     #embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-large-en-v1.5", show_progress=True, model_kwargs={'device': "cpu"})
-    qdrant = Qdrant.from_documents(docs, embeddings, location=":memory:", collection_name="cde_data", force_recreate=True)
+    qdrant = Qdrant.from_documents(docs, embeddings, location=":memory:", collection_name="cde_data", force_recreate=True) # move to server
     return qdrant
 
 def setup_langchain():
@@ -67,7 +67,7 @@ def setup_langchain():
     model_name = next(item["name"] for item in config["models"] if item["active"])
     llm = gpt4all.GPT4All(
         model=model_name,
-        max_tokens=300,
+        max_tokens=2048,
         n_threads=10,
         temp=0.3,
         top_p=0.2,

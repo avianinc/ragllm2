@@ -130,3 +130,4 @@ huggingface/
 data/
 archive/
 sessions/
+*.tar

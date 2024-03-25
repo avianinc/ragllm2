@@ -14,7 +14,7 @@ from langchain_helpers import setup_environment, load_documents_from_folder, pre
 logging.basicConfig(level=logging.DEBUG)
 
 DATA_DIR = 'data'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'csv'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'csv'} 
 
 # Make sure the sessions folder exists
 sessions_dir = "sessions"
@@ -116,6 +116,7 @@ def process_query():
     combined_context = historical_context + " " + rag_context
 
     try:
+        
         response = llm_chain.invoke(input={"question": query, "context": combined_context})
 
         # Append the new query-response pair to session history
@@ -126,6 +127,7 @@ def process_query():
             json.dump(session_history, file)
 
         return jsonify({"response": response['text'], "qhid": qhid})
+        
     except Exception as e:
         logging.error(f"Error processing query: {e}")
         return jsonify({"error": "Failed to process query"}), 500
@@ -160,6 +162,7 @@ def config_page():
         # Update the config.json based on the selection
         new_config = request.json
         update_config(new_config)
+        setup_langchain() # this will update the setup with the new model
         return jsonify({"success": True})
     elif request.headers.get('Accept') == 'application/json':
         # Return the config as JSON for AJAX calls

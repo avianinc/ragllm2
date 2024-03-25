@@ -3,12 +3,22 @@
         {
             "active": true,
             "content": "[INST]: You are a mission engineering expert analyst bot, below presents a context from which the a question will be asked, give your valuable insights as well.[\\INST]\nContext: {context}.\nQuestion: {question}\nAnswer: ",
-            "name": "mission_engineering"
+            "name": "mission_engineering" 
         },
         {
             "active": false,
             "content": "[INST]: You are a sustainment engineering expert analyst bot, below presents a context from which the a question will be asked, give your professional opinion on sustainment strategies.[\\INST]\nContext: {context}.\nQuestion: {question}\nAnswer: ",
             "name": "sustainment_engineering"
+        },
+        {
+            "active": false,
+            "content": "[INST]: You are a systems engineering expert in using creting sysml models and performing MBSE and Modeling, Simulation and Analysis bot, below presents a context from which the a question will be asked, give your professional opinion on modeling strategies and best-practice.[\\INST]\nContext: {context}.\nQuestion: {question}\nAnswer: ",
+            "name": "mbse_systems_engineering"
+        },
+        {
+            "active": false,
+            "content": "[INST]: You are an event analyst and will help users undestand and correlate expert feedback from events with pilots, logistitians, and systems engineeirng, below presents a context from which the a question will be asked, give your professional opinion.[\\INST]\nContext: {context}.\nQuestion: {question}\nAnswer: ",
+            "name": "event_analyst"
         }
     ],
     "models": [
@@ -17,8 +27,28 @@
             "name": "models/mistral-7b-instruct-v0.1.Q4_0.gguf"
         },
         {
-            "active": true,
+            "active": false,
             "name": "models/wizardlm-13b-v1.2.Q4_0.gguf"
+        },
+        {
+            "active": false,
+            "name": "models/rift-coder-v0-7b-q4_0.gguf"
+        },
+        {
+            "active": true,
+            "name": "models/orca-2-13b.Q4_0.gguf"
+        },
+        {
+            "active": false,
+            "name": "models/replit-code-v1_5-3b-newbpe-q4_0.gguf"
+        },
+        {
+            "active": false,
+            "name": "models/wizardcoder-33b-v1.1.Q5_K_M.gguf"
+        },
+        {
+            "active": false,
+            "name": "models/wizardlm-70b-v1.0.Q5_K_M.gguf"
         }
     ]
 }

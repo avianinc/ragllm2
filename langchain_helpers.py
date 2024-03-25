@@ -1,6 +1,7 @@
 import os
 import logging
 import re
+import torch
 
 import json
 from langchain.prompts import PromptTemplate
@@ -12,7 +13,7 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain_community.llms import gpt4all
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler 
 
 def load_config():
     with open('config.json', 'r') as file:
@@ -52,8 +53,10 @@ def split_documents(documents):
 
 def setup_embeddings_and_vector_store(docs):
     #embeddings = HuggingFaceEmbeddings(model_name="huggingface/models--BAAI--bge-large-en-v1.5/snapshots/d4aa6901d3a41ba39fb536a557fa166f842b0e09/", show_progress=True, model_kwargs={'device': "cpu"})
-    embeddings = HuggingFaceEmbeddings(model_name="huggingface/models--BAAI--bge-large-en-v1.5/snapshots/d4aa6901d3a41ba39fb536a557fa166f842b0e09/", show_progress=True)
-    #embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-large-en-v1.5", show_progress=True, model_kwargs={'device': "cpu"})
+    #embeddings = HuggingFaceEmbeddings(model_name="huggingface/models--BAAI--bge-large-en-v1.5/snapshots/d4aa6901d3a41ba39fb536a557fa166f842b0e09/", show_progress=True)
+    embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-large-en-v1.5", show_progress=True, model_kwargs={'device': "cuda:0"})
+    #embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-large-en-v1.5", show_progress=True)
+
     qdrant = Qdrant.from_documents(docs, embeddings, location=":memory:", collection_name="cde_data", force_recreate=True) # move to server
     return qdrant
 
@@ -64,10 +67,12 @@ def setup_langchain():
     callbacks = [StreamingStdOutCallbackHandler()]
     
     # Select the active model
-    model_name = next(item["name"] for item in config["models"] if item["active"])
+    model_name = "models/wizardlm-13b-v1.2.Q4_0.gguf" #next(item["name"] for item in config["models"] if item["active"])
+    print(f"Using model_name: {model_name}")
+    
     llm = gpt4all.GPT4All(
         model=model_name,
-        max_tokens=2048,
+        max_tokens=4096,
         n_threads=10,
         temp=0.3,
         top_p=0.2,
@@ -75,9 +80,11 @@ def setup_langchain():
         n_batch=8,
         seed=100,
         allow_download=False,
-        verbose=True,
-        callbacks=callbacks
+        verbose=False,
+        callbacks=callbacks,
+	device='nvidia'
     )
+    
     llm_chain = LLMChain(prompt=rag_prompt, llm=llm, verbose=True)
     return llm_chain
 

@@ -77,3 +77,4 @@ urllib3==2.2.1
 Werkzeug==3.0.1
 yarl==1.9.4
 zipp==3.17.0
+jupyterlab==4.1.5

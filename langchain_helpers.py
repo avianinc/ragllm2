@@ -52,6 +52,9 @@ def split_documents(documents):
     return text_splitter.split_documents(documents)
 
 def setup_embeddings_and_vector_store(docs):
+    # This is an issues when airgapped... you must push the hugginface directory and then point directly to it
+    # Also not that if you do not specify a gpu it will default to a cup
+    # Im still not sure how to use multiple GPUs --> See issue #1
     #embeddings = HuggingFaceEmbeddings(model_name="huggingface/models--BAAI--bge-large-en-v1.5/snapshots/d4aa6901d3a41ba39fb536a557fa166f842b0e09/", show_progress=True, model_kwargs={'device': "cpu"})
     #embeddings = HuggingFaceEmbeddings(model_name="huggingface/models--BAAI--bge-large-en-v1.5/snapshots/d4aa6901d3a41ba39fb536a557fa166f842b0e09/", show_progress=True)
     embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-large-en-v1.5", show_progress=True, model_kwargs={'device': "cuda:0"})
@@ -79,7 +82,7 @@ def setup_langchain():
         top_k=40,
         n_batch=8,
         seed=100,
-        allow_download=False,
+        allow_download=True,
         verbose=False,
         callbacks=callbacks,
 	device='nvidia'

@@ -1,0 +1,11 @@
+Logistician's Feedback
+Event Content: 6
+Comments: While the content was relevant, it lacked focus on logistical aspects such as supply chain management within engineering projects and how simulation models can optimize logistics.
+
+Welcome Packet: 8
+Comments: The pre-event information was clear and well-organized, making it easy to prepare for the event. Suggest adding a section on logistical considerations in engineering projects for future editions.
+
+Software: 9
+Comments: The software provided was excellent for visualizing logistical flows and understanding the impact of different variables. Its ease of use and clarity in presenting complex data were particularly noteworthy.
+
+Suggestions/Additional Comments: Including sessions or workshops on integrating logistical simulations with engineering models would provide a more holistic view of project management. Also, case studies on successful logistical optimizations in engineering projects could offer practical insights.

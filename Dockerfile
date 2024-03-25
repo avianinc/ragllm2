@@ -8,13 +8,20 @@ WORKDIR /app
 COPY . /app
 
 # Install any needed packages specified in requirements.txt
+# Make sure jupyterlab is listed in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 5000 available to the world outside this container
-EXPOSE 5000
+# Install supervisord
+RUN apt-get update && apt-get install -y supervisor
 
-# Define environment variable for Flask to locate the application
+# Make port 5000 available for Flask and port 8888 for Jupyter Lab
+EXPOSE 5000 8888
+
+# Define environment variable for Flask
 ENV FLASK_APP=app.py
 
-# Run api.py when the container launches
-CMD ["flask", "run", "--host=0.0.0.0"]
+# Supervisor configuration file
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Run supervisord when the container launches
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

@@ -112,7 +112,7 @@ This process allows for a coherent and context-aware conversation with the servi
 ## Deployment
 ```
 docker build -t ragllm2 .
-docker run -p 5000:5000 ragllm2
+docker run -p 5000:5000 -p 8888:8888 ragllm2
 ```
 
 ## Contributing
